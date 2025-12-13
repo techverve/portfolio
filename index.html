@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Joy Jefferson</title>
+    
+    <!-- React & ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    
+    <!-- Babel for JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Custom Config for Tailwind to match the dark theme feel -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        slate: {
+                            850: '#151e2e',
+                            900: '#0f172a',
+                            950: '#020617',
+                        }
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-out forwards',
+                        'slide-up': 'slideUp 0.5s ease-out forwards',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569; 
+        }
+        body {
+            background-color: #020617;
+            color: #e2e8f0;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        // --- 1. USER DATA CONFIGURATION (EDIT THIS SECTION) ---
+        const PORTFOLIO_DATA = {
+            name: "Joy Jefferson Oletty Paulraj",
+            role: "Software Engineer & AI Researcher",
+            bio: "Building the invisible infrastructure that makes machine learning reliable, reproducible, and production-ready.",
+            socials: {
+                github: "https://github.com/techverve",
+                'graduation-cap': "https://scholar.google.com/citations?hl=en&user=9cSvkDoAAAAJ",
+                linkedin: "https://www.linkedin.com/in/joy-jefferson/",
+                mail: "mailto:joyjeffersonolettypaulraj@gmail.com", // Changed 'email' to 'mail' to match Lucide icon name
+            },
+            experience: [
+                {
+                    id: 1,
+                    role: "Senior Software Engineer - Machine Learning",
+                    company: "Bosch",
+                    period: "2023 - Present",
+                    highlights: ["Engineering AI pipelines and developing perception features for static object detection for L3-L5 autonomy."]
+                },
+                {
+                    id: 2,
+                    role: "Software Engineer Intern",
+                    company: "Bosch",
+                    period: "Jan, 2023 - May, 2023",
+                    highlights: 
+                    [
+                    "Built a cost-efficient image search backend storing 500M+ object embeddings in sharded PostgreSQL with pgvector/pgvectorscale, achieving 4× faster queries compared to vanilla PostgreSQL and performance comparable to specialized vector databases.",
+                    "Developed a model lifecycle framework with Voxel51 & Grafana to monitor and analyze image search model performance across multiple model versions."
+                    ]
+                },
+                {
+                    id: 3,
+                    role: "Founding AI Engineer",
+                    company: "Consuma AI",
+                    period: "Jan, 2021 - Dec, 2022",
+                    highlights: 
+                    [
+                    "Led 0→1 product development, taking the idea from concept to MVP that secured $100,000 in pre-seed funding from Co-Create Ventures. Owned end-to-end development of an LLM-based application and the supporting web platform.",
+                    "Designed, fine-tuned, and deployed LLMs for processing and analyzing large-scale consumer data, enabling real-time insights for product and marketing decisions.",
+                    "Implemented hallucination-control techniques and integrated dense retrieval with Contriever and late-interaction search using ColBERTv2, improving grounding and reliability of model outputs.",
+                    "Applied deep learning methods to predict market trends and consumer behavior, equipping brands with data-driven strategies that accelerated market positioning and decision-making.",
+                    "Built and maintained scalable AI infrastructure for model training, inference, and data pipelines, ensuring low-latency real-time analytics and seamless deployment in production."
+                    ]
+                },
+                {
+                    id: 4,
+                    role: "Software Engineer Intern",
+                    company: "Bosch",
+                    period: "June, 2022 - July, 2022",
+                    highlights: 
+                    [
+                    "Implemented training pipelines (ClearML, TensorBoard) with experiment versioning and automated reporting.", 
+                    "Built a Streamlit + NVIDIA Triton model serving platform, fully containerized with Docker."
+
+                    ]
+                },
+
+            ],
+            projects: [
+                {
+                    id: 1,
+                    title: "ReVerse",
+                    tags: ["Rust", "gRPC", "Distributed Systems"],
+                    description: "Redefining the way researchers collaborate and innovate. Stay tuned :)",
+                    link: "https://github.com/techverve"
+                },
+                {
+                    id: 2,
+                    title: "SecurAI",
+                    tags: ["PyTorch", "Dash", "Selenium"],
+                    description: "SecurAI automates facility surveillance using a 3D convolutional network to detect real-time anomalies, such as theft or assault, directly from video feeds. The system instantly flags suspicious activity via a web interface and sends WhatsApp alerts containing video clips to registered users.",
+                    link: "https://github.com/AdityaDas-IITM/SecurAI"
+                },
+                {
+                    id: 3,
+                    title: "Urgency Detector",
+                    tags: ["Tensorflow", "Python", "NLTK"],
+                    description: "This project utilizes supervised learning to categorize emails by urgency, enabling users to prioritize communication and improve productivity.",
+                    link: "https://github.com/techverve/UrgencyDetector"
+                }
+            ],
+            leadership: [
+                {
+                    id: 1,
+                    title: "ReVerse",
+                    tags: ["Rust", "gRPC", "Distributed Systems"],
+                    description: "Redefining the way researchers collaborate and innovate. Stay tuned :)",
+                    link: "#"
+                },
+                {
+                    id: 2,
+                    title: "SecurAI",
+                    tags: ["PyTorch", "Dash", "Selenium"],
+                    description: "SecurAI automates facility surveillance using a 3D convolutional network to detect real-time anomalies, such as theft or assault, directly from video feeds. The system instantly flags suspicious activity via a web interface and sends WhatsApp alerts containing video clips to registered users.",
+                    link: "https://github.com/AdityaDas-IITM/SecurAI"
+                },
+                {
+                    id: 3,
+                    title: "Urgency Detector",
+                    tags: ["Tensorflow", "Python", "NLTK"],
+                    description: "This project utilizes supervised learning to categorize emails by urgency, enabling users to prioritize communication and improve productivity.",
+                    link: "https://github.com/techverve/UrgencyDetector"
+                }
+            ],
+            milestones: [
+                {
+                    id: 1,
+                    year: "TBD",
+                    title: "TBD",
+                    description: "TBD"
+                },
+                {
+                    id: 2,
+                    year: "Dec, 2025",
+                    title: "More responsilities ;)",
+                    description: "Take over as tandem for Traffic Sign head in the multi task setup, resposible for end-to-end machine learning pipelines, mentoring colleagues and overall performance improvements."
+                },
+                {
+                    id: 3,
+                    year: "Dec, 2023",
+                    title: "First international assignment at Berlin, Germany",
+                    description: "My first time meeting our global team across Germany, USA and India. Met with stakeholders and supported inmeeting desired perception performance for customer demos. enjoyed some really good beer as well."
+                },
+                {
+                    id: 4,
+                    year: "Aug, 2023",
+                    title: "Joined Bosch full-time",
+                    description: "Working with core perception team with focus of Traffic Sign Recognition performance improvement. Only now realized that traffic sign is really important in context of road safety and also an interesting problem to solve with regards to long tail classification."
+                },
+                {
+                    id: 5,
+                    year: "Aug, 2023",
+                    title: "First print of my research work is available at ACM Digital Library.",
+                    description: ""
+                },
+                {
+                    id: 6,
+                    year: "Jun, 2023",
+                    title: "First international conference presentation",
+                    description: "I was fortunate to get a chance to present my undergraduate capstone project at ICCMS'23 Dalian, China. Got a really good chance to discuss latest innovation in the field AI for Autonomous driving"
+                },
+                {
+                    id: 7,
+                    year: "Jun, 2022",
+                    title: "First internship with Bosch",
+                    description: "I was one of the first interns to join the perception team at Bosch ADAS team. I enjoyed building a proof-of-concept MLops pipeline that streamlined data curatiion, model training and deployment. Ever since havent looked back ;)"
+                },
+                {
+                    id: 8,
+                    year: "Aug, 2021",
+                    title: "Joined Consuma as a founding AI engineer",
+                    description: "Joined Abhilash and his team to work on some cool stuff that helped brands to take their product to next level."
+                },
+                {
+                    id: 9,
+                    year: "Aug, 2019",
+                    title: "Bachelor's Degree",
+                    description: "Started my undergraduate degree in Computer Science, a domain that i was truly passioante about."
+                }
+            ],
+            education: [
+                {
+                    id: 1,
+                    degree: "Bachelor of Technology in Computer Science and Engineering",
+                    school: "PES University",
+                    year: "2019-2023"
+                }
+            ],
+            publications: [
+                {
+                    id: 1,
+                    title: "Swarm Learning in Autonomous Driving: A Privacy Preserving Approach",
+                    conference: "ICCMS 2023, Dalian, China",
+                    link: "https://dl.acm.org/doi/10.1145/3608251.3608271",
+                    summary: "We propose a Swarm Learning based training approach where autonomous vehicles train deep neural networks locally on the edge, subsequently updating a global model by synchronizing learned parameters. This approach preserves privacy by keeping raw sensor data local while achieving superior convergence and accuracy compared to Federated Learning.",
+                    authors: [
+                        { name: "Abhishek Mishra", highlight: false, equal: true },
+                        { name: "O. P. Joy Jefferson", highlight: true, equal: true },
+                        { name: "Pradish Kapur", highlight: false, equal: false },
+                        { name: "Kiran Kannur", highlight: false, equal: false },
+                        { name: "Pooja Agarwal", highlight: false, equal: false },
+                        { name: "Arti Arya", highlight: false, equal: false }
+                    ]
+                },
+            ],
+            teaching: [
+                {
+                    id: 1,
+                    course: "UE20CS345 - Network Analysis and Mining",
+                    role: "Head TA",
+                    period: "Spring 2023",
+                    description: "Managed 2 other TAs, led lab sessions on graph machine learning, and graded final projects.",
+                    materials: "https://github.com/techverve/UE20CS345-NAM"
+                },
+                {
+                    id: 2,
+                    course: "UE23CS328C - Natural Language Processing",
+                    role: "Teaching Assistant",
+                    period: "Summer 2023",
+                    description: "Led lab sessions focusing on concepts from basic to advance NLP concepts.",
+                    materials: "https://github.com/techverve/UE23CS328C-NLP"
+                }
+            ],
+            leadership: [
+                {
+                    id: 1,
+                    role: "Vice Chairperson",
+                    organization: "ACM PES Student Chapter",
+                    period: "2021 - 2022",
+                    highlights: [
+                        "Organized 'HacktoberFest'21', a 24-hour hackathon with 500+ participants and industry sponsors.",
+                        "Spearheaded a peer mentorship program connecting 10+ seniors colloborated with sophomores and juniors on various projects.",
+                        "Managed a dedicated team of 50+ volunteers and an annual budget for events and workshops."
+                    ]
+                },
+                {
+                    id: 2,
+                    role: "Core Team Member",
+                    organization: "Google Developer Student Clubs (GDSC)",
+                    period: "2020 - 2022",
+                    highlights: [
+                        "Conducted Machine Learning study Jams, successfully certifying 100+ students in Machine Learning essentials.",
+                        "Led the technical deployment team for the annual CSS battles event, building the event website with automatic grading capabilities.",
+                    ]
+                }
+            ],
+        };
+
+        // --- COMPONENTS ---
+
+        const Icon = ({ name, size = 20, className }) => {
+            const svgRef = useRef(null);
+
+            useEffect(() => {
+                // Ensure lucide is loaded
+                if (window.lucide && window.lucide.icons) {
+                    // Convert kebab-case to PascalCase (e.g. "external-link" -> "ExternalLink")
+                    const iconName = name.split('-').map(part => part.charAt(0).toUpperCase() + part.slice(1)).join('');
+                    const iconDef = window.lucide.icons[iconName];
+
+                    if (iconDef && svgRef.current) {
+                        // Use lucide's internal createElement if available, or just clear and append
+                        // Recent lucide builds expose createElement
+                        const svgElement = window.lucide.createElement(iconDef);
+                        
+                        // Set attributes
+                        svgElement.setAttribute('width', size);
+                        svgElement.setAttribute('height', size);
+                        if (className) svgElement.setAttribute('class', className);
+                        
+                        // Manually manage the DOM inside this span to avoid React conflicts
+                        svgRef.current.innerHTML = '';
+                        svgRef.current.appendChild(svgElement);
+                    }
+                }
+            }, [name, size, className]);
+
+            return <span ref={svgRef} className="inline-flex items-center justify-center"></span>;
+        };
+
+        const SectionHeader = ({ title, subtitle }) => (
+            <div className="mb-8 animate-slide-up">
+                <h2 className="text-3xl font-bold text-slate-100 mb-2">{title}</h2>
+                <div className="h-1 w-20 bg-indigo-500 rounded-full"></div>
+                {subtitle && <p className="text-slate-400 mt-2">{subtitle}</p>}
+            </div>
+        );
+
+        const Card = ({ children, className = "" }) => (
+            <div className={`bg-slate-800/50 backdrop-blur-sm border border-slate-700/50 p-6 rounded-xl hover:border-indigo-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-indigo-500/10 hover:-translate-y-1 ${className}`}>
+                {children}
+            </div>
+        );
+
+        const NavButton = ({ active, onClick, children, icon }) => (
+            <button 
+                onClick={onClick}
+                className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
+                    active 
+                    ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/25' 
+                    : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                }`}
+            >
+                <Icon name={icon} size={16} />
+                <span className="hidden md:inline">{children}</span>
+            </button>
+        );
+
+        // --- MAIN APP ---
+
+        function App() {
+            const [activeTab, setActiveTab] = useState('experience');
+
+            const renderContent = () => {
+                switch(activeTab) {
+                    case 'experience':
+                        return (
+                            <div className="space-y-8">
+                                {PORTFOLIO_DATA.experience.map(exp => (
+                                    <div key={exp.id} className="group relative border-l-2 border-slate-700 pl-8 pb-8 last:pb-0 animate-slide-up">
+                                        <div className="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-slate-900 border-2 border-indigo-500 group-hover:bg-indigo-500 transition-colors"></div>
+                                        
+                                        <div className="mb-4">
+                                            <h3 className="text-2xl font-bold text-slate-100">{exp.role}</h3>
+                                            <p className="text-indigo-400 font-medium text-lg">{exp.company} • {exp.period}</p>
+                                        </div>
+
+                                        {/* Bullet Points */}
+                                        <ul className="space-y-3">
+                                            {exp.highlights.map((point, index) => (
+                                                <li key={index} className="flex items-start text-slate-400 group/item">
+                                                    <span className="mr-3 mt-1.5 min-w-[6px] h-[6px] rounded-full bg-indigo-500/50 group-hover/item:bg-indigo-400 transition-colors"></span>
+                                                    <span>{point}</span>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                ))}
+                            </div>
+                        );
+                    case 'milestones':
+                        return (
+                            <div className="space-y-0 animate-slide-up relative">
+                                {/* Vertical Timeline Line */}
+                                <div className="absolute left-[27px] top-4 bottom-4 w-0.5 bg-gradient-to-b from-indigo-500/50 via-slate-700 to-transparent"></div>
+                                
+                                {PORTFOLIO_DATA.milestones.map((milestone, idx) => (
+                                    <div key={milestone.id} className="relative flex items-start gap-8 pb-12 last:pb-0 group">
+                                        {/* Timeline Dot */}
+                                        <div className="relative z-10 flex flex-col items-center">
+                                            <div className="w-18 h-18 rounded-full bg-slate-900 border-4 border-indigo-500/30 group-hover:border-indigo-500 group-hover:shadow-[0_0_15px_rgba(99,102,241,0.3)] transition-all duration-300 flex items-center justify-center text-sm font-bold text-indigo-400">
+                                                {milestone.year}
+                                            </div>
+                                        </div>
+                                        
+                                        {/* Content Card */}
+                                        <Card className="flex-1 -mt-2">
+                                            <h3 className="text-xl font-bold text-slate-100 mb-2">{milestone.title}</h3>
+                                            <p className="text-slate-400">{milestone.description}</p>
+                                        </Card>
+                                    </div>
+                                ))}
+                            </div>
+                        );
+                    case 'projects':
+                        return (
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-slide-up">
+                                {PORTFOLIO_DATA.projects.map(project => (
+                                    <Card key={project.id} className="flex flex-col h-full">
+                                        <div className="flex justify-between items-start mb-4">
+                                            <h3 className="text-xl font-bold text-slate-100">{project.title}</h3>
+                                            <a href={project.link} className="text-slate-400 hover:text-indigo-400 transition-colors">
+                                                <Icon name="external-link" size={20} />
+                                            </a>
+                                        </div>
+                                        <p className="text-slate-400 mb-4 flex-grow">{project.description}</p>
+                                        <div className="flex flex-wrap gap-2 mt-auto">
+                                            {project.tags.map(tag => (
+                                                <span key={tag} className="px-3 py-1 text-xs font-medium bg-indigo-500/10 text-indigo-400 rounded-full border border-indigo-500/20">
+                                                    {tag}
+                                                </span>
+                                            ))}
+                                        </div>
+                                    </Card>
+                                ))}
+                            </div>
+                        );
+                    case 'publications':
+                        return (
+                            <div className="space-y-4 animate-slide-up">
+                                {PORTFOLIO_DATA.publications.map(pub => (
+                                    <Card key={pub.id} className="group">
+                                        <div className="flex items-start justify-between mb-3">
+                                            <div className="flex-1">
+                                                <h3 className="text-lg font-bold text-slate-100 group-hover:text-indigo-400 transition-colors mb-1">{pub.title}</h3>
+                                                
+                                                {/* Authors List */}
+                                                <div className="text-sm text-slate-400 mb-2">
+                                                    {pub.authors.map((author, idx) => (
+                                                        <span key={idx} className={author.highlight ? "text-indigo-300 font-semibold" : ""}>
+                                                            {author.name}{author.equal && "*"}
+                                                            {idx < pub.authors.length - 1 ? ", " : ""}
+                                                        </span>
+                                                    ))}
+                                                </div>
+                                                
+                                                <p className="text-slate-500 font-medium text-xs uppercase tracking-wider mb-3">{pub.conference}</p>
+                                                <p className="text-slate-400 text-sm leading-relaxed border-l-2 border-slate-700 pl-3">{pub.summary}</p>
+                                            </div>
+                                            <a href={pub.link} className="text-slate-600 group-hover:text-indigo-500 transition-colors ml-4 mt-1">
+                                                <Icon name="external-link" size={20} />
+                                            </a>
+                                        </div>
+                                    </Card>
+                                ))}
+                            </div>
+                        );
+                    case 'education':
+                        return (
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-slide-up">
+                                {PORTFOLIO_DATA.education.map(edu => (
+                                    <Card key={edu.id}>
+                                        <div className="flex items-start gap-4">
+                                            <div className="p-3 bg-indigo-500/10 rounded-lg text-indigo-400">
+                                                <Icon name="graduation-cap" size={24} />
+                                            </div>
+                                            <div>
+                                                <h3 className="text-lg font-bold text-slate-100">{edu.school}</h3>
+                                                <p className="text-indigo-400">{edu.degree}</p>
+                                                <p className="text-slate-500 text-sm mt-1">{edu.year}</p>
+                                            </div>
+                                        </div>
+                                    </Card>
+                                ))}
+                            </div>
+                        );
+                    case 'teaching':
+                        return (
+                            <div className="space-y-6 animate-slide-up">
+                                {PORTFOLIO_DATA.teaching.map(teach => (
+                                    <Card key={teach.id}>
+                                        <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-2">
+                                            <h3 className="text-xl font-bold text-slate-100">{teach.course}</h3>
+                                            <span className="text-sm text-indigo-400 border border-indigo-500/30 px-2 py-1 rounded">{teach.role}</span>
+                                        </div>
+                                        <p className="text-sm text-slate-500 mb-4">{teach.period}</p>
+                                        <p className="text-slate-400 mb-5">{teach.description}</p>
+                                        
+                                        {/* Materials Link */}
+                                        <a href={teach.materials} className="inline-flex items-center gap-2 text-sm font-medium text-indigo-400 hover:text-indigo-300 transition-colors border border-indigo-500/30 rounded-lg px-4 py-2 bg-indigo-500/5 hover:bg-indigo-500/10 group">
+                                            <Icon name="folder-open" size={16} /> 
+                                            <span>View Course Materials</span>
+                                            <div className="transition-transform group-hover:translate-x-1">
+                                                <Icon name="arrow-right" size={14} />
+                                            </div>
+                                        </a>
+                                    </Card>
+                                ))}
+                            </div>
+                        );
+                    case 'leadership':
+                        return (
+                            <div className="space-y-6 animate-slide-up">
+                                {PORTFOLIO_DATA.leadership.map(lead => (
+                                    <Card key={lead.id} className="group">
+                                        <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-4">
+                                            <div>
+                                                <h3 className="text-xl font-bold text-slate-100 group-hover:text-indigo-400 transition-colors">{lead.role}</h3>
+                                                <p className="text-indigo-400 font-medium">{lead.organization}</p>
+                                            </div>
+                                            <span className="text-sm text-slate-500 font-mono mt-1 md:mt-0 border border-slate-700/50 rounded px-2 py-0.5">{lead.period}</span>
+                                        </div>
+                                        <ul className="space-y-2.5">
+                                            {lead.highlights.map((point, index) => (
+                                                <li key={index} className="flex items-start text-slate-400 text-sm leading-relaxed">
+                                                    <span className="mr-2.5 mt-1.5 min-w-[5px] h-[5px] rounded-full bg-indigo-500/60"></span>
+                                                    <span>{point}</span>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </Card>
+                                ))}
+                            </div>
+                        );
+                    default:
+                        return null;
+                }
+            };
+
+            return (
+                <div className="min-h-screen bg-slate-950 text-slate-200 selection:bg-indigo-500/30 selection:text-indigo-200 pb-20">
+                    
+                    {/* Hero Section */}
+                    <header className="relative bg-slate-900 border-b border-slate-800/60 pb-16 pt-20 px-4 md:px-0">
+                        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMSIgY3k9IjEiIHI9IjEiIGZpbGw9InJnYmEoOTksIDEwMiwgMjQxLCAwLjA1KSIvPjwvc3ZnPg==')] [mask-image:linear-gradient(to_bottom,white,transparent)]"></div>
+                        <div className="max-w-4xl mx-auto relative z-10 text-center">
+                            <div className="w-24 h-24 bg-gradient-to-tr from-indigo-500 to-purple-500 rounded-full mx-auto mb-6 p-1 shadow-2xl shadow-indigo-500/20">
+                                <div className="w-full h-full bg-slate-900 rounded-full flex items-center justify-center text-4xl">
+                                    👾
+                                </div>
+                            </div>
+                            <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 tracking-tight">
+                                {PORTFOLIO_DATA.name}
+                            </h1>
+                            <p className="text-lg text-indigo-400 mb-6 font-medium">{PORTFOLIO_DATA.role}</p>
+                            <p className="text-slate-400 max-w-xl mx-auto leading-relaxed mb-8">
+                                {PORTFOLIO_DATA.bio}
+                            </p>
+                            
+                            <div className="flex justify-center gap-4">
+                                {Object.entries(PORTFOLIO_DATA.socials).map(([platform, link]) => (
+                                    <a key={platform} href={link} className="p-3 bg-slate-800 rounded-full hover:bg-slate-700 hover:text-indigo-400 transition-all hover:-translate-y-1 border border-slate-700">
+                                        <Icon name={platform} size={20} />
+                                    </a>
+                                ))}
+                            </div>
+                        </div>
+                    </header>
+
+                    {/* Navigation Bar (Sticky) */}
+                    <div className="sticky top-4 z-50 max-w-4xl mx-auto px-4 mb-12">
+                        <div className="bg-slate-900/80 backdrop-blur-md border border-slate-700/50 rounded-2xl p-2 shadow-2xl flex flex-wrap justify-center gap-1 md:gap-2 overflow-x-auto">
+                            <NavButton active={activeTab === 'experience'} onClick={() => setActiveTab('experience')} icon="briefcase">Experience</NavButton>
+                            <NavButton active={activeTab === 'milestones'} onClick={() => setActiveTab('milestones')} icon="briefcase">Milestone</NavButton>
+                            <NavButton active={activeTab === 'leadership'} onClick={() => setActiveTab('leadership')} icon="crown">Leadership</NavButton> 
+                            <NavButton active={activeTab === 'projects'} onClick={() => setActiveTab('projects')} icon="code-2">Projects</NavButton>
+                            <NavButton active={activeTab === 'publications'} onClick={() => setActiveTab('publications')} icon="scroll-text">Publications</NavButton>
+                            <NavButton active={activeTab === 'education'} onClick={() => setActiveTab('education')} icon="graduation-cap">Education</NavButton>
+                            <NavButton active={activeTab === 'teaching'} onClick={() => setActiveTab('teaching')} icon="users">Teaching</NavButton>
+                        </div>
+                    </div>
+
+                    {/* Dynamic Content Area */}
+                    <main className="max-w-4xl mx-auto px-6 min-h-[500px]">
+                        {renderContent()}
+                    </main>
+
+                    <footer className="max-w-4xl mx-auto px-6 mt-20 text-center text-slate-600 text-sm">
+                        <p>© {new Date().getFullYear()} {PORTFOLIO_DATA.name}. Built with React & Tailwind.</p>
+                    </footer>
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
